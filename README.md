@@ -1,30 +1,40 @@
-# ☕ The Moccamaster Loop
+# [PR] Fix coffee availability
 
-*Think recursively. Brew proactively.*
+**Status:** Awaiting human review  
+**Reviewer:** Whoever takes the next cup  
+**Priority:** Increases as the pot empties
 
-Every coffee comes with three checks:
+## Problem
 
-1. **Water ready?** If the tank is empty, fill it for the next batch.
-2. **Coffee ready?** If the filter or grounds are used, replace both.
-3. **Room to brew?** If the pot can hold the entire next batch, start it.
+Coffee consumption scales with the team. Coffee production scales with Douglas.
 
-Prepare the water, filter and coffee **even when the pot is full**. Once brewing starts, let the cycle finish before preparing the next batch. Check again after pouring: your cup may have made room.
+## Proposed change
+
+**One cup. One contribution.** Before taking coffee, complete the first applicable action:
+
+1. **Tank empty?** Fill it for the next batch.
+2. **Filter or grounds used?** Replace both.
+3. **Ready to brew, with room for the entire next batch?** Start brewing.
+
+Then pass the task to the next coffee drinker. Preparing water, a fresh filter and coffee does not require an empty pot. If brewing is running, or everything is ready but the pot is too full, no action is needed this time.
 
 > **The last cup is yours only when the next brew is running.**  
-> “I was going to” is not a brewing state.
+> Completing a preparation step does not override this requirement.
+
+## Implementation
 
 ```python
-# Pseudocode. You are the agent.
+# Pseudocode. Human execution required.
 
-def keep_coffee_ready():
+def contribute():
     if machine.is_brewing():
         return
 
     if tank.is_empty():
         tank.fill_for_next_batch()
-    if not basket.is_fresh():
+    elif not basket.is_fresh():
         basket.replace_filter_and_coffee()
-    if pot.free_space() >= tank.batch_volume():
+    elif pot.free_space() >= tank.batch_volume():
         machine.start_brewing()
 
 
@@ -32,16 +42,24 @@ def moccamaster_loop(agent):
     if agent is None:
         return  # Everyone has gone home.
 
-    keep_coffee_ready()
+    contribute()  # One action per cup.
 
     last_cup_locked = pot.cups <= 1 and not machine.is_brewing()
     if pot.cups > 0 and not last_cup_locked:
         agent.pour_coffee()
-        keep_coffee_ready()
 
     return moccamaster_loop(next_thirsty_agent())
 ```
 
-**No coffee left behind. No colleague left without.**
+## Review checklist
 
-`fallback="Douglas"` has been removed. Please handle your own dependencies.
+- [ ] I can identify an empty water tank.
+- [ ] I understand that fresh coffee requires fresh grounds.
+- [ ] I can press a button without delegating to an AI agent.
+- [ ] I accept that “I was going to” is not a brewing state.
+
+## Breaking change
+
+`fallback="Douglas"` has been removed.
+
+**Approval requested. Implementation expected at your next cup.**

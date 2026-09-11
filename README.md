@@ -1,4 +1,4 @@
-# [PR] Fix coffee availability
+# fix(coffee): keep the next batch ready
 
 **Status:** Awaiting human review  
 **Reviewer:** Whoever takes the next cup  
